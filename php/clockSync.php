@@ -17,7 +17,6 @@
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     $content = curl_exec($ch);
-//        $errorCode = curl_errno($ch);
     $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     
@@ -40,6 +39,6 @@
         echo "\n";
 //        echo "Clock Synchronization Success.";
     } else {
-        echo "Clock Synchronization Failure.[{$status}]";
+        echo "Clock Synchronization Failure.[{$status}]\n";
     }
 ?>
