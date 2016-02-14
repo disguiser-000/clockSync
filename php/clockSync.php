@@ -21,24 +21,22 @@
     curl_close($ch);
     
     if ($status == 200) {
-        echo "Connect to time server.\n";
-        //echo "status:".$status."\n";
         $tbTime = json_decode($content, true);
-        $timestamp = substr($tbTime['t'],0,strlen($tbTime['t'])-3);
-        $day = date("Y-m-d", $timestamp);
-        $time = date("H:i:s", $timestamp);
-        $cmd1 = "date {$day}";
-        $cmd2 = "time {$time}";
-        //echo $cmd1."\n";
-        echo "Update Date => ";
-        passthru($cmd1);
-        echo "\n";
-        //echo $cmd2."\n";
-        echo "Update Time => ";
-        passthru($cmd2);
-        echo "\n";
-//        echo "Clock Synchronization Success.";
+        if (isset($tbTime['t']) && strlen($tbTime['t'])==13) {
+            $timestamp = (float) substr($tbTime['t'],0,strlen($tbTime['t'])-3);
+            if ($timestamp > strtotime("1980-01-01")) {
+                $day = date("Y-m-d", $timestamp);
+                $time = date("H:i:s", $timestamp);
+                passthru("date ".date("Y/m/d", $timestamp));
+                passthru("time ".date("H:i:s", $timestamp));
+                echo "Connect to Time server Success.\n";
+            } else {
+                echo "Connect to Time server Failure.[Time Error]\n";
+            }
+        } else {
+            echo "Connect to Time server Failure.[Data Error]\n";
+        }
     } else {
-        echo "Clock Synchronization Failure.[{$status}]\n";
+        echo "Connect to Time server Failure.[{$status}]\n";
     }
 ?>
